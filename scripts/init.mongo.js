@@ -1,13 +1,15 @@
 // const { db } = require("mongodb");
 /* global db print */
 /* eslint no-restricted-globals: "off" */
-db.issues.remove({});
-db.deleted_issues.remove({});
-const issueDB = [
+db.backlog.remove({});
+db.deleted_tickets.remove({});
+db.user_profile.remove({});
+const ticketDB = [
   {
     id: 1,
     status: 'New',
     owner: 'Ravan',
+    priority: 1,
     effort: 5,
     created: new Date('2019-01-15'),
     due: undefined,
@@ -25,6 +27,7 @@ const issueDB = [
     id: 2,
     status: 'Assigned',
     owner: 'Eddie',
+    priority: 2,
     effort: 14,
     created: new Date('2019-01-16'),
     due: new Date('2019-02-01'),
@@ -33,15 +36,36 @@ const issueDB = [
       + ' that appears when clicking on Add',
   },
 ];
-db.issues.insertMany(issueDB);
-const count = db.issues.count();
-print('Inserted', count, 'issues');
-db.issues.createIndex({ id: 1 }, { unique: true });
-db.issues.createIndex({ status: 1 });
-db.issues.createIndex({ owner: 1 });
-db.issues.createIndex({ created: 1 });
-db.issues.createIndex({ title: 'text', description: 'text' });
-db.deleted_issues.createIndex({ id: 1 }, { unique: true });
+// const profileDB = [
+//   {
+//     id: 1,
+//     name: 'Qiang',
+//     role: 'developer',
+//     email: 'fang.q.q@northeastern.com',
+//   },
+// ];
+const dashboardDB = [
+  {
+    id: 1,
+    title: 'Project 1',
+    label: 'Project test: do something',
+  },
+];
 
-db.counters.remove({ _id: 'issues' });
-db.counters.insert({ _id: 'issues', current: count });
+db.backlog.insertMany(ticketDB);
+const count = db.backlog.count();
+print('Inserted', count, 'backlog');
+db.backlog.createIndex({ id: 1 }, { unique: true });
+db.backlog.createIndex({ status: 1 });
+db.backlog.createIndex({ owner: 1 });
+db.backlog.createIndex({ priority: 1 });
+db.backlog.createIndex({ created: 1 });
+db.backlog.createIndex({ title: 'text', description: 'text' });
+db.deleted_tickets.createIndex({ id: 1 }, { unique: true });
+
+db.dashboard.insertMany(dashboardDB);
+const dashboardCount = db.dashboard.count();
+print('Inserted', dashboardCount, 'dashboard');
+
+db.counters.remove({ _id: 'tickets' });
+db.counters.insert({ _id: 'tickets', current: count });
