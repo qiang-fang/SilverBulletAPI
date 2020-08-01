@@ -3,10 +3,12 @@
 /* eslint no-restricted-globals: "off" */
 db.backlog.remove({});
 db.deleted_tickets.remove({});
-db.user_profile.remove({});
+db.dashboard.remove({});
+
 const ticketDB = [
   {
     id: 1,
+    dashboardId: 1,
     status: 'New',
     owner: 'Ravan',
     priority: 1,
@@ -25,6 +27,7 @@ const ticketDB = [
   },
   {
     id: 2,
+    dashboardId: 2,
     status: 'Assigned',
     owner: 'Eddie',
     priority: 2,
@@ -36,19 +39,17 @@ const ticketDB = [
       + ' that appears when clicking on Add',
   },
 ];
-// const profileDB = [
-//   {
-//     id: 1,
-//     name: 'Qiang',
-//     role: 'developer',
-//     email: 'fang.q.q@northeastern.com',
-//   },
-// ];
+
 const dashboardDB = [
   {
     id: 1,
     title: 'Project 1',
-    label: 'Project test: do something',
+    label: 'Project test1: do something',
+  },
+  {
+    id: 2,
+    title: 'Project 2',
+    label: 'Project test2: do something',
   },
 ];
 
