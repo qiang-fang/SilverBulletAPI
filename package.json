@@ -1,7 +1,7 @@
 {
-  "name": "pro-mern-stack-2-api",
+  "name": "silver-bullet-scrumboard-api",
   "version": "1.0.0",
-  "description": "Pro MERN Stack (2nd Edition) API",
+  "description": "Silver Bullet Scrumboard API",
   "main": "index.js",
   "scripts": {
     "start": "nodemon -e js,graphql -w . -w .env server.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.ccs.neu.edu/NEU-CS5610-SU20/QiangFang-Book.git"
+    "url": "git@github.ccs.neu.edu:NEU-CS5610-SU20/GroupProject_Segfault_API.git"
   },
   "author": "QiangFang",
   "license": "ISC",
@@ -25,7 +25,7 @@
     "graphql": "^14.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.5.8",
-    "nodemon": "^1.19.4"
+    "nodemon": "^2.0.4"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

@@ -1,4 +1,4 @@
-let aboutMessage = 'Issue Tracker API v1.0';
+let aboutMessage = 'Silver Bullet Scrumboard v1.0';
 const { mustBeSignedIn } = require('./auth.js');
 
 function setMessage(_, { message }) {
@@ -10,4 +10,6 @@ function getMessage() {
   return aboutMessage;
 }
 
-module.exports = { getMessage, setMessage: mustBeSignedIn(setMessage) };
+//deleted mustBeSignedIn() at this development stage for convenience
+//module.exports = { getMessage, setMessage: mustBeSignedIn(setMessage) };
+module.exports = { getMessage, setMessage };

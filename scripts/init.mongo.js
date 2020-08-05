@@ -4,18 +4,18 @@
 db.backlog.remove({});
 db.deleted_tickets.remove({});
 db.dashboard.remove({});
+db.counters.remove({});
 
 const ticketDB = [
   {
     id: 1,
     dashboardId: 1,
-    status: 'New',
+    status: 'ToDo',
+    title: 'Error in console when clicking Add',
     owner: 'Ravan',
     priority: 1,
-    effort: 5,
     created: new Date('2019-01-15'),
-    due: undefined,
-    title: 'Error in console when clicking Add',
+    due: undefined,   
     description: 'Steps to recreate the problem:'
       + '\n1. Refresh the browser.'
       + '\n2. Select "New" in the filter'
@@ -28,13 +28,12 @@ const ticketDB = [
   {
     id: 2,
     dashboardId: 2,
-    status: 'Assigned',
+    status: 'ToDo',
+    title: 'Missing bottom border on panel',
     owner: 'Eddie',
     priority: 2,
-    effort: 14,
     created: new Date('2019-01-16'),
-    due: new Date('2019-02-01'),
-    title: 'Missing bottom border on panel',
+    due: new Date('2019-02-01'),   
     description: 'There needs to be a border in the bottom in the panel'
       + ' that appears when clicking on Add',
   },
@@ -56,6 +55,10 @@ const dashboardDB = [
 db.backlog.insertMany(ticketDB);
 const count = db.backlog.count();
 print('Inserted', count, 'backlog');
+
+db.counters.remove({ _id: 'backlog' });
+db.counters.insert({ _id: 'backlog', current: count });
+
 db.backlog.createIndex({ id: 1 }, { unique: true });
 db.backlog.createIndex({ status: 1 });
 db.backlog.createIndex({ owner: 1 });
@@ -68,5 +71,3 @@ db.dashboard.insertMany(dashboardDB);
 const dashboardCount = db.dashboard.count();
 print('Inserted', dashboardCount, 'dashboard');
 
-db.counters.remove({ _id: 'tickets' });
-db.counters.insert({ _id: 'tickets', current: count });

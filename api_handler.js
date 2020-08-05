@@ -4,7 +4,7 @@ const { ApolloServer } = require('apollo-server-express');
 
 const GraphQLDate = require('./graphql_date.js');
 const about = require('./about.js');
-const issue = require('./issue.js');
+const ticket = require('./ticket.js');
 const auth = require('./auth.js');
 
 // define handlers or functions that can be called when the above fields are accessed
@@ -12,16 +12,16 @@ const resolvers = {
   Query: {
     about: about.getMessage,
     user: auth.resolveUser,
-    issueList: issue.list,
-    issue: issue.get,
-    issueCounts: issue.counts,
+    backlog: ticket.list,
+    ticket: ticket.get,
+    ticketCounts: ticket.counts,
   },
   Mutation: {
     setAboutMessage: about.setMessage,
-    issueAdd: issue.add,
-    issueUpdate: issue.update,
-    issueDelete: issue.delete,
-    issueRestore: issue.restore,
+    ticketAdd: ticket.add,
+    ticketUpdate: ticket.update,
+    ticketDelete: ticket.delete,
+    ticketRestore: ticket.restore,
   },
   GraphQLDate,
 };
