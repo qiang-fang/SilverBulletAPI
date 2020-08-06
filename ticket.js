@@ -12,33 +12,29 @@ async function get(_, { id }) {
 }
 
 //changed the filter from effort to priority
-// async function list(_, {
-//   status, priorityMin, priorityMax, search, page,
-// }) {
-//   const db = getDb();
-//   const filter = {};
-//   if (status) filter.status = status;
-//   if (priorityMin !== undefined || priorityMax !== undefined) {
-//     filter.effort = {};
-//     if (priorityMin !== undefined) filter.priority.$gte = priorityMin;
-//     if (priorityMax !== undefined) filter.priority.$lte = priorityMax;
-//   }
-//   if (search) filter.$text = { $search: search };
-//   const cursor = db.collection('backlog').find(filter)
-//     .sort({ id: 1 })
-//     .skip(PAGE_SIZE * (page - 1))
-//     .limit(PAGE_SIZE);
-//   const totalCount = await cursor.count(false);
-//   const tickets = cursor.toArray();
-//   const pages = Math.ceil(totalCount / PAGE_SIZE);
-//   return { tickets, pages };
-// }
-
-async function list() {
+async function list(_, {
+  status, page,
+}) {
   const db = getDb();
-  const ticket = db.collection('backlog').find().toArray()
-  return ticket;
+  const filter = {};
+
+  if (status) filter.status = status;
+  
+  const cursor = db.collection('backlog').find(filter)
+    .sort({ id: 1 })
+    .skip(PAGE_SIZE * (page - 1))
+    .limit(PAGE_SIZE);
+  const totalCount = await cursor.count(false);
+  const tickets = cursor.toArray();
+  const pages = Math.ceil(totalCount / PAGE_SIZE);
+  return { tickets, pages };
 }
+
+// async function list() {
+//   const db = getDb();
+//   const ticket = db.collection('backlog').find().toArray()
+//   return ticket;
+// }
 
 //changed the second if statement
 //if the status of a ticket is InProgress or Done
@@ -86,10 +82,9 @@ async function remove(_, { id }) {
   const ticket = await db.collection('backlog').findOne({ id });
   if (!ticket) return false;
   ticket.deleted = new Date();
-  //insert deleted ticket to deleted_tickets collection first
+
   let result = await db.collection('deleted_tickets').insertOne(ticket);
   if (result.insertedId) {
-    //remove deleted ticket from backlog
     result = await db.collection('backlog').removeOne({ id });
     return result.deletedCount === 1;
   }
@@ -152,7 +147,7 @@ module.exports = {
   add,
   get,
   update,
-  delete: remove,
+  delete:remove,
   restore,
   counts,
 };

@@ -22,7 +22,10 @@ type TicketCounts {
   InProgress: Int
   Done: Int
 }
-
+type TicketListWithPages {
+  tickets: [Ticket!]!
+  pages: Int
+}
 type User {
   signedIn: Boolean!
   givenName: String
@@ -59,7 +62,10 @@ input TicketUpdateInputs {
 type Query {
   about: String!
   user: User!
-  backlog:[Ticket!]!
+  backlog(
+    status: StatusType
+    page: Int = 1
+  ):TicketListWithPages
   ticket(id: Int!): Ticket!
   ticketCounts(
     status: StatusType
