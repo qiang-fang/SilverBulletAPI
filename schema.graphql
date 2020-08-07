@@ -1,31 +1,35 @@
 enum StatusType {
-  ToDo
-  InProgress
-  Done
+  New
+  Assigned
+  Fixed
+  Closed
 }
 
-type Ticket {
+type Issue {
   _id: ID!
   id: Int!
-  dashboardId: Int!
+  title: String!
   status: StatusType!
-  title: String! 
   owner: String
-  priority: Int!
+  effort: Int
   created: GraphQLDate!
   due: GraphQLDate
   description: String
 }
 
-type TicketCounts {
-  ToDo: Int
-  InProgress: Int
-  Done: Int
+type IssueCounts {
+  owner: String!
+  New: Int
+  Assigned: Int
+  Fixed: Int
+  Closed: Int
 }
-type TicketListWithPages {
-  tickets: [Ticket!]!
+
+type IssueListWithPages {
+  issues: [Issue!]!
   pages: Int
 }
+
 type User {
   signedIn: Boolean!
   givenName: String
@@ -35,24 +39,25 @@ type User {
 
 scalar GraphQLDate
 
-# define this new input type called TicketInputs in the schema
-"Toned down Ticket, used as inputs, without server generated values."
-input TicketInputs {
+# define this new input type called IssueInputs in the schema
+"Toned down Issue, used as inputs, without server generated values."
+input IssueInputs {
   title: String!
-  status: StatusType = ToDo
+  "Optional, if not supplied, will be set to 'New'"
+  status: StatusType = New
   owner: String
-  priority: Int
+  effort: Int
   due: GraphQLDate
   description: String
 }
 
-"""Inputs for ticketUpdate: all are optional. Whichever is specified will
+"""Inputs for issueUpdate: all are optional. Whichever is specified will
 be set to the given value, undefined fields will remain unmodified."""
-input TicketUpdateInputs {
+input IssueUpdateInputs {
   title: String
   status: StatusType
   owner: String
-  priority: Int
+  effort: Int
   due: GraphQLDate
   description: String
 }
@@ -62,19 +67,25 @@ input TicketUpdateInputs {
 type Query {
   about: String!
   user: User!
-  backlog(
+  # issueList(status: StatusType): [Issue!]!
+  issueList(
     status: StatusType
+    effortMin: Int
+    effortMax: Int
+    search: String
     page: Int = 1
-  ):TicketListWithPages
-  ticket(id: Int!): Ticket!
-  ticketCounts(
+  ): IssueListWithPages
+  issue(id: Int!): Issue!
+  issueCounts(
     status: StatusType
-  ): [TicketCounts!]!
+    effortMin: Int
+    effortMax: Int
+  ): [IssueCounts!]!
 }
 type Mutation {
   setAboutMessage(message: String!): String
-  ticketAdd(ticket: TicketInputs!): Ticket!
-  ticketUpdate(id: Int!, changes: TicketUpdateInputs!): Ticket!
-  ticketDelete(id: Int!): Boolean!
-  ticketRestore(id: Int!): Boolean!
+  issueAdd(issue: IssueInputs!): Issue!
+  issueUpdate(id: Int!, changes: IssueUpdateInputs!): Issue!
+  issueDelete(id: Int!): Boolean!
+  issueRestore(id: Int!): Boolean!
 }
