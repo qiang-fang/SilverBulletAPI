@@ -33,11 +33,12 @@ UI_SERVER_ORIGIN=https://silverbullet-ui-segfault.herokuapp.com
 cd tracker-ui
 
 heroku config:set \
-UI_API_ENDPOINT=https://tracker-ui-qiangfang.herokuapp.com/graphql \
-UI_AUTH_ENDPOINT=https://tracker-ui-qiangfang.herokuapp.com/auth \
-UI_SERVER_API_ENDPOINT=https://tracker-api-qiangfang.herokuapp.com/graphql \
-API_PROXY_TARGET=https://tracker-api-qiangfang.herokuapp.com
+UI_API_ENDPOINT=https://silverbullet-ui-segfault.herokuapp.com/graphql \
+UI_AUTH_ENDPOINT=https://silverbullet-ui-segfault.herokuapp.com/auth \
+UI_SERVER_API_ENDPOINT=https://silverbullet-api-segfault.herokuapp.com/graphql \
+API_PROXY_TARGET=https://silverbullet-api-segfault.herokuapp.com
 
 
 
-
+heroku config:set \
+GOOGLE_CLIENT_ID=14882429343-eco73nemee2g4oqvi43282on4ljnc3b0.apps.googleusercontent.com

@@ -9,7 +9,7 @@ const ticketDB = [
   {
     id: 1,
     dashboardId: 1,
-    status: 'New',
+    status: 'ToDo',
     owner: 'Ravan',
     priority: 1,
     effort: 5,
@@ -28,7 +28,7 @@ const ticketDB = [
   {
     id: 2,
     dashboardId: 2,
-    status: 'Assigned',
+    status: 'InProgress',
     owner: 'Eddie',
     priority: 2,
     effort: 14,
@@ -44,12 +44,17 @@ const dashboardDB = [
   {
     id: 1,
     title: 'Project 1',
-    label: 'Project test1: do something',
+    label: 'Project test1: do something1',
   },
   {
     id: 2,
     title: 'Project 2',
-    label: 'Project test2: do something',
+    label: 'Project test2: do something2',
+  },
+  {
+    id: 3,
+    title: 'Project 3',
+    label: 'Project test3: do something3',
   },
 ];
 

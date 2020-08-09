@@ -1,7 +1,7 @@
 /* global db print */
 /* eslint no-restricted-globals: "off" */
 const owners = ['Ravan', 'Eddie', 'Pieta', 'Parvati', 'Victor'];
-const statuses = ['New', 'In progress', 'Done', 'Signed off'];
+const statuses = ['ToDo', 'InProgress', 'Done', 'SignedOff'];
 const initialCount = db.backlog.count();
 for (let i = 0; i < 100; i += 1) {
   const randomCreatedDate = (new Date())
