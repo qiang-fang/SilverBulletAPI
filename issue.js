@@ -17,6 +17,7 @@ async function list(_, {
   const db = getDb();
   const filter = {};
   if (status) filter.status = status;
+
   if (effortMin !== undefined || effortMax !== undefined) {
     filter.effort = {};
     if (effortMin !== undefined) filter.effort.$gte = effortMin;

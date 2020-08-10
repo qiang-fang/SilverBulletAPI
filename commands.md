@@ -55,7 +55,7 @@ db.backlog.aggregate([
   {
     $lookup:
       {
-        from: "dashboard.",
+        from: "dashboard.find(title = value)",
         localField: "dashboardId",
         foreignField: "id",
         as: "dashboard_docs"

@@ -17,6 +17,13 @@ type Issue {
   description: String
 }
 
+type DashboardRow {
+  _id: ID!
+  id: Int!
+  title: String!
+  label: String
+}
+
 type IssueCounts {
   owner: String!
   New: Int
@@ -70,6 +77,7 @@ type Query {
   # issueList(status: StatusType): [Issue!]!
   issueList(
     status: StatusType
+    dashboardId: Int
     effortMin: Int
     effortMax: Int
     search: String
@@ -81,6 +89,7 @@ type Query {
     effortMin: Int
     effortMax: Int
   ): [IssueCounts!]!
+  dashboardRow(id: Int!): DashboardRow
 }
 type Mutation {
   setAboutMessage(message: String!): String
