@@ -1,4 +1,8 @@
 # 
+
+## if you want to connect mongoDB via shell
+mongo "mongodb+srv://silver_bullet_user:HnJH6pq4rlFJFGiq@cluster0.vh7h9.gcp.mongodb.net/silverbullet?retryWrites=true&w=majority"
+
 cd GroupProject_Segfault_API
 
 mongo "mongodb+srv://silver_bullet_user:HnJH6pq4rlFJFGiq@cluster0.vh7h9.gcp.mongodb.net/silverbullet?retryWrites=true&w=majority" scripts/init.mongo.js
@@ -42,3 +46,20 @@ API_PROXY_TARGET=https://silverbullet-api-segfault.herokuapp.com
 
 heroku config:set \
 GOOGLE_CLIENT_ID=14882429343-eco73nemee2g4oqvi43282on4ljnc3b0.apps.googleusercontent.com
+
+
+
+
+## mongoDB
+db.backlog.aggregate([
+  {
+    $lookup:
+      {
+        from: "dashboard.",
+        localField: "dashboardId",
+        foreignField: "id",
+        as: "dashboard_docs"
+      }
+  }
+])
+

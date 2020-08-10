@@ -6,7 +6,7 @@ const PAGE_SIZE = 10;
 
 async function get(_, { id }) {
   const db = getDb();
-  const issue = await db.collection('issues').findOne({ id });
+  const issue = await db.collection('backlog').findOne({ id });
   return issue;
 }
 
@@ -24,7 +24,7 @@ async function list(_, {
   }
   // const issues = await db.collection('issues').find(filter).toArray();
   if (search) filter.$text = { $search: search };
-  const cursor = db.collection('issues').find(filter)
+  const cursor = db.collection('backlog').find(filter)
     .sort({ id: 1 })
     .skip(PAGE_SIZE * (page - 1))
     .limit(PAGE_SIZE);
@@ -53,36 +53,36 @@ async function add(_, { issue }) {
   const newIssue = Object.assign({}, issue);
   newIssue.created = new Date();
   // issue.id = issuesDB.length + 1;
-  newIssue.id = await getNextSequence('issues');
+  newIssue.id = await getNextSequence('backlog');
   // if (issue.status == undefined) issue.status = 'New';
   // issuesDB.push(issue);
-  const result = await db.collection('issues').insertOne(newIssue);
+  const result = await db.collection('backlog').insertOne(newIssue);
 
   // return issue;
-  const savedIssue = await db.collection('issues').findOne({ _id: result.insertedId });
+  const savedIssue = await db.collection('backlog').findOne({ _id: result.insertedId });
   return savedIssue;
 }
 
 async function update(_, { id, changes }) {
   const db = getDb();
   if (changes.title || changes.status || changes.owner) {
-    const issue = await db.collection('issues').findOne({ id });
+    const issue = await db.collection('backlog').findOne({ id });
     Object.assign(issue, changes);
     validate(issue);
   }
-  await db.collection('issues').updateOne({ id }, { $set: changes });
-  const savedIssue = await db.collection('issues').findOne({ id });
+  await db.collection('backlog').updateOne({ id }, { $set: changes });
+  const savedIssue = await db.collection('backlog').findOne({ id });
   return savedIssue;
 }
 
 async function remove(_, { id }) {
   const db = getDb();
-  const issue = await db.collection('issues').findOne({ id });
+  const issue = await db.collection('backlog').findOne({ id });
   if (!issue) return false;
   issue.deleted = new Date();
-  let result = await db.collection('deleted_issues').insertOne(issue);
+  let result = await db.collection('deleted_tickets').insertOne(issue);
   if (result.insertedId) {
-    result = await db.collection('issues').removeOne({ id });
+    result = await db.collection('backlog').removeOne({ id });
     return result.deletedCount === 1;
   }
   return false;
@@ -90,10 +90,10 @@ async function remove(_, { id }) {
 
 async function restore(_, { id }) {
   const db = getDb();
-  const issue = await db.collection('deleted_issues').findOne({ id });
+  const issue = await db.collection('deleted_tickets').findOne({ id });
   if (!issue) return false;
   issue.deleted = new Date();
-  let result = await db.collection('issues').insertOne(issue);
+  let result = await db.collection('backlog').insertOne(issue);
   if (result.insertedId) {
     result = await db.collection('deleted_issues').removeOne({ id });
     return result.deletedCount === 1;
@@ -110,7 +110,7 @@ async function counts(_, { status, effortMin, effortMax }) {
     if (effortMin !== undefined) filter.effort.$gte = effortMin;
     if (effortMax !== undefined) filter.effort.$lte = effortMax;
   }
-  const results = await db.collection('issues').aggregate([
+  const results = await db.collection('backlog').aggregate([
     { $match: filter },
     {
       $group: {
