@@ -38,6 +38,11 @@ type IssueListWithPages {
   pages: Int
 }
 
+type TicketListWithPages {
+  issues: [Issue!]!
+  pages: Int
+}
+
 type User {
   signedIn: Boolean!
   givenName: String
@@ -52,7 +57,7 @@ scalar GraphQLDate
 input IssueInputs {
   title: String!
   "Optional, if not supplied, will be set to 'New'"
-  status: StatusType = New
+  status: StatusType = ToDo
   owner: String
   effort: Int
   due: GraphQLDate
@@ -78,7 +83,6 @@ type Query {
   # issueList(status: StatusType): [Issue!]!
   issueList(
     status: StatusType
-    dashboardId: Int
     effortMin: Int
     effortMax: Int
     search: String
@@ -90,7 +94,14 @@ type Query {
     effortMin: Int
     effortMax: Int
   ): [IssueCounts!]!
-  dashboardRow(id: Int!): DashboardRow
+  ticketList(
+    status: String
+    #dashboardId: String
+    effortMin: Int
+    effortMax: Int
+    search: String
+    page: Int = 1
+  ): TicketListWithPages
 }
 type Mutation {
   setAboutMessage(message: String!): String

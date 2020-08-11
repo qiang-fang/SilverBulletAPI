@@ -43,17 +43,17 @@ const ticketDB = [
 const dashboardDB = [
   {
     id: 1,
-    title: 'Project 1',
+    title: 'Project1',
     label: 'Project test1: do something1',
   },
   {
     id: 2,
-    title: 'Project 2',
+    title: 'Project2',
     label: 'Project test2: do something2',
   },
   {
     id: 3,
-    title: 'Project 3',
+    title: 'Project3',
     label: 'Project test3: do something3',
   },
 ];
@@ -69,6 +69,8 @@ db.backlog.createIndex({ created: 1 });
 db.backlog.createIndex({ title: 'text', description: 'text' });
 db.deleted_tickets.createIndex({ id: 1 }, { unique: true });
 
+db.dashboard.createIndex({ id: 1 }, { unique: true });
+db.dashboard.createIndex({ title: 1 }, { unique: true });
 db.dashboard.insertMany(dashboardDB);
 const dashboardCount = db.dashboard.count();
 print('Inserted', dashboardCount, 'dashboard');
