@@ -19,6 +19,7 @@ type Issue {
 }
 
 type Dashboard {
+  _id: ID!
   id: Int!
   title: String!
   label: String
@@ -63,6 +64,11 @@ input IssueInputs {
   description: String
 }
 
+input DashboardInputs {
+  title: String!
+  label: String
+}
+
 """Inputs for issueUpdate: all are optional. Whichever is specified will
 be set to the given value, undefined fields will remain unmodified."""
 input IssueUpdateInputs {
@@ -82,6 +88,7 @@ type Query {
   # issueList(status: StatusType): [Issue!]!
   issueList(
     status: StatusType
+    dashboardId: Int
     effortMin: Int
     effortMax: Int
     search: String
@@ -102,6 +109,7 @@ type Query {
     page: Int = 1
   ): TicketListWithPages
   dashboardList: [Dashboard!]!
+  dashboard(id: Int!): Dashboard!
 }
 type Mutation {
   setAboutMessage(message: String!): String
@@ -109,4 +117,5 @@ type Mutation {
   issueUpdate(id: Int!, changes: IssueUpdateInputs!): Issue!
   issueDelete(id: Int!): Boolean!
   issueRestore(id: Int!): Boolean!
+  dashboardAdd(dashboard: DashboardInputs!): Dashboard!
 }

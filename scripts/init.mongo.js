@@ -4,6 +4,7 @@
 db.backlog.remove({});
 db.deleted_tickets.remove({});
 db.dashboard.remove({});
+db.counters.remove({});
 
 const ticketDB = [
   {
@@ -59,8 +60,12 @@ const dashboardDB = [
 ];
 
 db.backlog.insertMany(ticketDB);
-const count = db.backlog.count();
-print('Inserted', count, 'backlog');
+const countTickets = db.backlog.count();
+print('Inserted', countTickets, 'backlog');
+
+db.counters.remove({ _id: 'backlog' });
+db.counters.insert({ _id: 'backlog', current: countTickets });
+
 db.backlog.createIndex({ id: 1 }, { unique: true });
 db.backlog.createIndex({ status: 1 });
 db.backlog.createIndex({ owner: 1 });
@@ -72,8 +77,9 @@ db.deleted_tickets.createIndex({ id: 1 }, { unique: true });
 db.dashboard.createIndex({ id: 1 }, { unique: true });
 db.dashboard.createIndex({ title: 1 }, { unique: true });
 db.dashboard.insertMany(dashboardDB);
-const dashboardCount = db.dashboard.count();
-print('Inserted', dashboardCount, 'dashboard');
+const countBoards = db.dashboard.count();
+print('Inserted', countBoards, 'dashboard');
 
-db.counters.remove({ _id: 'tickets' });
-db.counters.insert({ _id: 'tickets', current: count });
+db.counters.remove({ _id: 'dashboard' });
+db.counters.insert({ _id: 'dashboard', current: countBoards });
+

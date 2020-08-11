@@ -19,6 +19,7 @@ const resolvers = {
     issueCounts: issue.counts,
     ticketList: ticket.list,
     dashboardList: dashboard.list,
+    dashboard: dashboard.get,
   },
   Mutation: {
     setAboutMessage: about.setMessage,
@@ -26,6 +27,7 @@ const resolvers = {
     issueUpdate: issue.update,
     issueDelete: issue.delete,
     issueRestore: issue.restore,
+    dashboardAdd: dashboard.add,
   },
   GraphQLDate,
 };

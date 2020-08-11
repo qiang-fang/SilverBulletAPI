@@ -24,5 +24,5 @@ for (let i = 0; i < 100; i += 1) {
   db.backlog.insertOne(ticket);
 }
 const count = db.backlog.count();
-db.counters.update({ _id: 'tickets' }, { $set: { current: count } });
+db.counters.update({ _id: 'backlog' }, { $set: { current: count } });
 print('New ticket count:', count);
