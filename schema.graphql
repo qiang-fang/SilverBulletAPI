@@ -18,8 +18,7 @@ type Issue {
   description: String
 }
 
-type DashboardRow {
-  _id: ID!
+type Dashboard {
   id: Int!
   title: String!
   label: String
@@ -102,6 +101,7 @@ type Query {
     search: String
     page: Int = 1
   ): TicketListWithPages
+  dashboardList: [Dashboard!]!
 }
 type Mutation {
   setAboutMessage(message: String!): String
