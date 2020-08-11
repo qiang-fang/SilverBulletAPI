@@ -4,86 +4,89 @@ const { mustBeSignedIn } = require('./auth.js');
 
 const PAGE_SIZE = 10;
 
-//function for get a single ticket
 async function get(_, { id }) {
   const db = getDb();
-  const ticket = await db.collection('backlog').findOne({ id });
-  return ticket;
+  const issue = await db.collection('backlog').findOne({ id });
+  return issue;
 }
 
-//changed the filter from effort to priority
 async function list(_, {
-  status, page,
+  status, effortMin, effortMax, search, page,
 }) {
+  // return issuesDB;
   const db = getDb();
   const filter = {};
+  if (status) {
+    const dashboardResult = await db.collection('dashboard').findOne({ title: status });
+    // filter.status = status;
+    filter.dashboardId = dashboardResult.id;
+    console.log('ticket.js dashboardid:****',filter.dashboardId);
+  }
 
-  if (status) filter.status = status;
-  
+  if (effortMin !== undefined || effortMax !== undefined) {
+    filter.effort = {};
+    if (effortMin !== undefined) filter.effort.$gte = effortMin;
+    if (effortMax !== undefined) filter.effort.$lte = effortMax;
+  }
+  // const issues = await db.collection('issues').find(filter).toArray();
+  if (search) filter.$text = { $search: search };
   const cursor = db.collection('backlog').find(filter)
     .sort({ id: 1 })
     .skip(PAGE_SIZE * (page - 1))
     .limit(PAGE_SIZE);
   const totalCount = await cursor.count(false);
-  const tickets = cursor.toArray();
+  const issues = cursor.toArray();
   const pages = Math.ceil(totalCount / PAGE_SIZE);
-  return { tickets, pages };
+  return { issues, pages };
 }
 
-// async function list() {
-//   const db = getDb();
-//   const ticket = db.collection('backlog').find().toArray()
-//   return ticket;
-// }
-
-//changed the second if statement
-//if the status of a ticket is InProgress or Done
-//it must have a owner
-function validate(ticket) {
+function validate(issue) {
   const errors = [];
-  if (ticket.title.length < 3) {
+  if (issue.title.length < 3) {
     errors.push('Field "title" must be at least 3 characters long.');
   }
-  if (ticket.status !== 'ToDo' && !ticket.owner) {
-    errors.push(`Field owner is required when status is ${ticket.status}.`);
+  if (issue.status === 'Assigned' && !issue.owner) {
+    errors.push('Field "owner" is required when status is "Assigned".');
   }
   if (errors.length > 0) {
     throw new UserInputError('Invalid input(s)', { errors });
   }
 }
 
-async function add(_, { ticket }) {
+async function add(_, { issue }) {
   const db = getDb();
-  validate(ticket);
-  const newTicket = Object.assign({}, ticket);
-  newTicket.created = new Date();
-  newTicket.id = await getNextSequence('backlog');
+  validate(issue);
+  const newIssue = Object.assign({}, issue);
+  newIssue.created = new Date();
+  // issue.id = issuesDB.length + 1;
+  newIssue.id = await getNextSequence('backlog');
+  // if (issue.status == undefined) issue.status = 'New';
+  // issuesDB.push(issue);
+  const result = await db.collection('backlog').insertOne(newIssue);
 
-  const result = await db.collection('backlog').insertOne(newTicket);
-
-  const savedTicket = await db.collection('backlog').findOne({ _id: result.insertedId });
-  return savedTicket;
+  // return issue;
+  const savedIssue = await db.collection('backlog').findOne({ _id: result.insertedId });
+  return savedIssue;
 }
 
 async function update(_, { id, changes }) {
   const db = getDb();
   if (changes.title || changes.status || changes.owner) {
-    const ticket = await db.collection('backlog').findOne({ id });
-    Object.assign(ticket, changes);
-    validate(ticket);
+    const issue = await db.collection('backlog').findOne({ id });
+    Object.assign(issue, changes);
+    validate(issue);
   }
   await db.collection('backlog').updateOne({ id }, { $set: changes });
-  const savedTicket = await db.collection('backlog').findOne({ id });
-  return savedTicket;
+  const savedIssue = await db.collection('backlog').findOne({ id });
+  return savedIssue;
 }
 
 async function remove(_, { id }) {
   const db = getDb();
-  const ticket = await db.collection('backlog').findOne({ id });
-  if (!ticket) return false;
-  ticket.deleted = new Date();
-
-  let result = await db.collection('deleted_tickets').insertOne(ticket);
+  const issue = await db.collection('backlog').findOne({ id });
+  if (!issue) return false;
+  issue.deleted = new Date();
+  let result = await db.collection('deleted_tickets').insertOne(issue);
   if (result.insertedId) {
     result = await db.collection('backlog').removeOne({ id });
     return result.deletedCount === 1;
@@ -91,26 +94,28 @@ async function remove(_, { id }) {
   return false;
 }
 
-//undo delete API
 async function restore(_, { id }) {
   const db = getDb();
-  const ticket = await db.collection('deleted_tickets').findOne({ id });
-  if (!ticket) return false;
-  ticket.deleted = new Date();
-  let result = await db.collection('backlog').insertOne(ticket);
+  const issue = await db.collection('deleted_tickets').findOne({ id });
+  if (!issue) return false;
+  issue.deleted = new Date();
+  let result = await db.collection('backlog').insertOne(issue);
   if (result.insertedId) {
-    result = await db.collection('deleted_tickets').removeOne({ id });
+    result = await db.collection('deleted_issues').removeOne({ id });
     return result.deletedCount === 1;
   }
   return false;
 }
 
-//ticket counts API
-//filtered by status
-async function counts(_, { status }) {
+async function counts(_, { status, effortMin, effortMax }) {
   const db = getDb();
   const filter = {};
   if (status) filter.status = status;
+  if (effortMin !== undefined || effortMax !== undefined) {
+    filter.effort = {};
+    if (effortMin !== undefined) filter.effort.$gte = effortMin;
+    if (effortMax !== undefined) filter.effort.$lte = effortMax;
+  }
   const results = await db.collection('backlog').aggregate([
     { $match: filter },
     {
@@ -130,24 +135,12 @@ async function counts(_, { status }) {
   return Object.values(stats);
 }
 
-
-//deleted mustBeSignedIn() at this development stage for convenience
-// module.exports = {
-//   list,
-//   add: mustBeSignedIn(add),
-//   get,
-//   update: mustBeSignedIn(update),
-//   delete: mustBeSignedIn(remove),
-//   restore: mustBeSignedIn(restore),
-//   counts,
-// };
-
 module.exports = {
   list,
-  add,
+  add: mustBeSignedIn(add),
   get,
-  update,
-  delete:remove,
-  restore,
+  update: mustBeSignedIn(update),
+  delete: mustBeSignedIn(remove),
+  restore: mustBeSignedIn(restore),
   counts,
 };

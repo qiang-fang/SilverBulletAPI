@@ -52,7 +52,7 @@ scalar GraphQLDate
 input IssueInputs {
   title: String!
   "Optional, if not supplied, will be set to 'New'"
-  status: StatusType = New
+  status: StatusType = ToDo
   owner: String
   effort: Int
   due: GraphQLDate
