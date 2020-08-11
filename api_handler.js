@@ -6,6 +6,7 @@ const GraphQLDate = require('./graphql_date.js');
 const about = require('./about.js');
 const issue = require('./issue.js');
 const auth = require('./auth.js');
+const dashboard = require('./dashboard.js');
 
 // define handlers or functions that can be called when the above fields are accessed
 const resolvers = {
@@ -15,6 +16,8 @@ const resolvers = {
     issueList: issue.list,
     issue: issue.get,
     issueCounts: issue.counts,
+    dashboardList: dashboard.list,
+    dashboard: dashboard.get,
   },
   Mutation: {
     setAboutMessage: about.setMessage,
@@ -22,6 +25,7 @@ const resolvers = {
     issueUpdate: issue.update,
     issueDelete: issue.delete,
     issueRestore: issue.restore,
+    dashboardAdd: dashboard.add,
   },
   GraphQLDate,
 };
