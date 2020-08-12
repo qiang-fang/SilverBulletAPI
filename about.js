@@ -1,4 +1,4 @@
-let aboutMessage = 'Issue Tracker API v1.0';
+let aboutMessage = 'Silver Bullet Scrumboard API v1.0';
 const { mustBeSignedIn } = require('./auth.js');
 
 function setMessage(_, { message }) {
