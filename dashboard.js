@@ -34,5 +34,5 @@ async function add(_, { dashboard }) {
 module.exports = {
   list,
   get,
-  add,
+  add: mustBeSignedIn(add),
 };
