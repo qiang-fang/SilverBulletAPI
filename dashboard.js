@@ -7,10 +7,8 @@ async function list() {
   const db = getDb();
   const cursor = db.collection('dashboard').find({}).sort({ id: 1 });
   const dashboards = cursor.toArray();
-  console.log('dashboard resolver: -----', dashboards);
   return dashboards;
 }
-
 
 async function get(_, { id }) {
   const db = getDb();
