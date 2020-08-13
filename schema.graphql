@@ -74,6 +74,7 @@ be set to the given value, undefined fields will remain unmodified."""
 input IssueUpdateInputs {
   title: String
   status: StatusType
+  dashboardId: Int
   owner: String
   effort: Int
   due: GraphQLDate
